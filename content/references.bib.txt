@@ -1,106 +1,52 @@
 % references.bib.txt
-% BibTeX reference file for the document.
-% This file uses the .bib.txt extension so it opens easily in any text editor.
-% generate.py automatically copies it as references.bib for LaTeX compilation.
+% BibTeX reference file.
+% Extension .bib.txt so it opens in any text editor without special software.
+% generate.py copies this as references.bib for LaTeX compilation.
 %
-% Add your references here in standard BibTeX format.
-% Cite in text.docx using Word's native citations OR just write [key] —
-% the generator will pass them through LaTeX unchanged.
+% Add your references below in standard BibTeX format.
+% Cite in text.docx using LaTeX notation: \citep{key} or \citet{key}
 
-@article{gibbs2015,
-  author  = {Gibbs, Holly K. and Rausch, Lisa and Munger, Jacob and Schelly, Ian and
-             Morton, Douglas C. and Noojipady, Praveen and Soares-Filho, Britaldo and
-             Barreto, Paulo and Micol, Ludmila and Walker, Nathalie F.},
-  title   = {Brazil's Soy Moratorium},
-  journal = {Science},
-  year    = {2015},
-  volume  = {347},
-  number  = {6220},
-  pages   = {377--378},
-  doi     = {10.1126/science.aaa0181}
+@article{example2024,
+  author  = {Last Name, First and Co-Author, Second},
+  title   = {Title of the Article},
+  journal = {Journal of Something},
+  year    = {2024},
+  volume  = {10},
+  number  = {2},
+  pages   = {1--20},
+  doi     = {10.xxxx/xxxxx}
 }
 
-@article{rajao2020,
-  author  = {Rajão, Raoni and Soares-Filho, Britaldo and Nunes, Felipe and
-             Börner, Jan and Machado, Lina and Assis, Débora and Oliveira, André and
-             Pinto, Luis and Ribeiro, Vivianne and Rausch, Lisa and Gibbs, Holly and
-             Figueira, Diego},
-  title   = {The Rotten Apples of Brazil's Agribusiness},
-  journal = {Science},
-  year    = {2020},
-  volume  = {369},
-  number  = {6501},
-  pages   = {246--248},
-  doi     = {10.1126/science.aba6646}
+@book{book2020,
+  author    = {Author, Name},
+  title     = {Title of the Book},
+  publisher = {Publisher Name},
+  year      = {2020},
+  address   = {City, Country},
+  isbn      = {978-0-000-00000-0}
 }
 
-@article{garrett2019,
-  author  = {Garrett, Rachael D. and Cammelli, Federico and Ferreira, Joice and
-             Levy, Santiago A. and Valentim, Judson and Vieira, Ima},
-  title   = {Criteria for Effective Zero-deforestation Commitments},
-  journal = {Global Environmental Change},
-  year    = {2019},
-  volume  = {54},
-  pages   = {135--147},
-  doi     = {10.1016/j.gloenvcha.2018.11.003}
+@inproceedings{conference2023,
+  author    = {Presenter, Name and Co-Author, Name},
+  title     = {Title of the Conference Paper},
+  booktitle = {Proceedings of the Conference Name},
+  year      = {2023},
+  pages     = {100--110},
+  address   = {City, Country}
 }
 
-@article{assuncao2015,
-  author  = {Assunção, Juliano and Gandour, Clarissa and Rocha, Rudi},
-  title   = {Deforestation Slowdown in the Brazilian Amazon: Prices or Policies?},
-  journal = {Environment and Development Economics},
-  year    = {2015},
-  volume  = {20},
-  number  = {6},
-  pages   = {697--722},
-  doi     = {10.1017/S1355770X15000078}
+@techreport{report2022,
+  author      = {Author, Name},
+  title       = {Title of the Technical Report},
+  institution = {Institution Name},
+  year        = {2022},
+  url         = {https://example.org/report}
 }
 
-@article{mapbiomas2023,
-  author  = {{MapBiomas Project}},
-  title   = {Collection 8 of the Annual Series of Land Use and Land Cover Maps of Brazil},
-  journal = {MapBiomas},
-  year    = {2023},
-  url     = {https://mapbiomas.org}
-}
-
-@article{soterroni2019,
-  author  = {Soterroni, Aline C. and Ramos, Fernando M. and Mosnier, Aline and
-             Fargione, Joseph and Andrade, Pedro R. and Baumgarten, Leticia and
-             Pirker, Johannes and Kraxner, Florian and Havlík, Petr and Obersteiner, Michael
-             and Câmara, Gilberto and Câmara, Natanael and Câmara, Otávio
-             and Câmara, Rodrigo},
-  title   = {Expanding the Soy Moratorium to Brazil's Cerrado},
-  journal = {Science Advances},
-  year    = {2019},
-  volume  = {5},
-  number  = {7},
-  doi     = {10.1126/sciadv.aav7336}
-}
-
-@techreport{trase2025,
-  author      = {{Trase / Stockholm Environment Institute}},
-  title       = {SEI-PCS Brazil Beef v2.2 Supply Chain Map: Data Sources and Methods},
-  institution = {Stockholm Environment Institute},
-  year        = {2025},
-  url         = {https://trase.earth}
-}
-
-@article{bustamante2023,
-  author  = {Bustamante, Mercedes and Roitman, Iris and Aide, T. Mitchell and
-             Fonseca, Bernardo and Gibson, Luke and Rodrigues, Ricardo R.},
-  title   = {Ecology and Sustainability of the Brazilian Cerrado},
-  journal = {Nature},
-  year    = {2023},
-  volume  = {621},
-  pages   = {59--79},
-  doi     = {10.1038/s41586-023-06600-3}
-}
-
-@misc{brazil2012,
-  author  = {{Brazil}},
-  title   = {Lei n.º 12.651, de 25 de maio de 2012 (Código Florestal)},
-  year    = {2012},
-  note    = {Diário Oficial da União, Brasília, DF, 28 maio 2012},
-  url     = {https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12651.htm}
+@misc{website2025,
+  author = {{Organization Name}},
+  title  = {Title of the Web Resource},
+  year   = {2025},
+  url    = {https://example.org},
+  note   = {Accessed: 2025-01-01}
 }
