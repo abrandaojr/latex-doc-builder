@@ -68,7 +68,7 @@ WORD_FILE   = CONTENT_DIR / "text.docx"
 EXCEL_FILE  = CONTENT_DIR / "tables.xlsx"
 BIB_FILE    = CONTENT_DIR / "references.bib.txt"
 
-# Row colour map  (Excel column "COLOR" → LaTeX colour)
+# Row colour map  (Excel column "COLOR" -> LaTeX colour)
 COLOR_MAP = {
     "green":  "mcolor!12",
     "blue":   "mdpiblue!12",
@@ -111,7 +111,7 @@ def esc(text: str) -> str:
             text = re.sub(r"(?<!\\)" + re.escape(old), new, text)
     # Typography
     text = text.replace("\n", r" \\ ")
-    text = text.replace("→", r"$\to$")
+    text = text.replace("->", r"$\to$")
     text = text.replace("≥", r"$\geq$")
     text = text.replace("≤", r"$\leq$")
     text = text.replace("–", "--")
@@ -162,7 +162,7 @@ def process_bibtex(src: Path, dst: Path) -> list[str]:
     dst.write_text(raw, encoding="utf-8")
 
     keys = re.findall(r"@\w+\s*\{\s*([^,\s]+)", raw)
-    print(f"  → BibTeX: {len(keys)} entries → {dst.name}")
+    print(f"  -> BibTeX: {len(keys)} entries -> {dst.name}")
     return keys
 
 
@@ -315,7 +315,7 @@ def read_excel(path: Path) -> dict[str, str]:
       Row 1  — table caption (first non-empty cell)
       Row 2  — column headers
       Row 3+ — data rows
-      Last column named "COLOR" (case-insensitive) → row shading
+      Last column named "COLOR" (case-insensitive) -> row shading
     """
     wb     = load_workbook(path)
     tables = {}
@@ -686,7 +686,7 @@ def _strip_latex_cmds(text: str) -> str:
     text = re.sub(r"\\textit\{([^}]+)\}", r"\1", text)
     text = re.sub(r"\\emph\{([^}]+)\}", r"\1", text)
     text = re.sub(r"\\texttt\{([^}]+)\}", r"\1", text)
-    text = re.sub(r"\$\\to\$", "→", text)
+    text = re.sub(r"\$\\to\$", "->", text)
     text = re.sub(r"\$\\geq\$", "≥", text)
     text = re.sub(r"\$\\leq\$", "≤", text)
     text = re.sub(r"\$\\approx\$", "≈", text)
@@ -795,7 +795,7 @@ def compile_pdf(clean: bool = False) -> bool:
            "-output-directory", str(ROOT), str(TEX_OUT)]
 
     for run_n in [1, 2]:
-        print(f"  → pdflatex pass {run_n}/2 …", end=" ", flush=True)
+        print(f"  -> pdflatex pass {run_n}/2 …", end=" ", flush=True)
         result = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
         if result.returncode != 0:
             # Find first error line
@@ -812,7 +812,7 @@ def compile_pdf(clean: bool = False) -> bool:
     pdf_dst = OUTPUT_DIR / "output.pdf"
     if pdf_src.exists():
         shutil.copy2(pdf_src, pdf_dst)
-        print(f"  → PDF saved: {pdf_dst}")
+        print(f"  -> PDF saved: {pdf_dst}")
 
     if clean:
         _clean_aux()
@@ -827,7 +827,7 @@ def _clean_aux():
         f = ROOT / f"main{ext}"
         if f.exists():
             f.unlink()
-    print("  → Auxiliary files removed.")
+    print("  -> Auxiliary files removed.")
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -894,7 +894,7 @@ def main():
         word_doc.save(str(word_dst))
         print(f"[Word] Saved: {word_dst}")
 
-    print("\n✅  Done. Check the output/ folder.")
+    print("\n[OK]  Done. Check the output/ folder.")
 
 
 if __name__ == "__main__":
