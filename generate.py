@@ -31,7 +31,7 @@ Usage
     --all    generate both PDF and Word
 """
 
-# ── Standard library ──────────────────────────────────────────────────────────
+# -- Standard library ----------------------------------------------------------
 import argparse
 import re
 import shutil
@@ -39,7 +39,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-# ── Third-party ───────────────────────────────────────────────────────────────
+# -- Third-party ---------------------------------------------------------------
 try:
     from docx import Document
     from docx.shared import Pt, RGBColor, Inches
@@ -52,9 +52,9 @@ except ImportError:
         "Or:  pip install -r requirements.txt"
     )
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # CONFIGURATION
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 ROOT        = Path(__file__).parent
 CONTENT_DIR = ROOT / "content"
@@ -79,9 +79,9 @@ COLOR_MAP = {
     "purple": "violet!12",
 }
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # HELPERS
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def ensure_output():
     OUTPUT_DIR.mkdir(exist_ok=True)
@@ -141,9 +141,9 @@ def run_to_latex(run) -> str:
     return txt
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # BIBTEX PARSER
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def process_bibtex(src: Path, dst: Path) -> list[str]:
     """
@@ -166,9 +166,9 @@ def process_bibtex(src: Path, dst: Path) -> list[str]:
     return keys
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # WORD READER
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 MARKER_TABLE  = re.compile(r"^TABLE\s*:\s*(.+)$", re.IGNORECASE)
 MARKER_FIGURE = re.compile(r"^FIGURE\s*:\s*(.+)$", re.IGNORECASE)
@@ -182,7 +182,7 @@ def para_to_latex(para) -> str:
     if not raw:
         return ""
 
-    # ── Markers ──────────────────────────────────────────────────────────────
+    # -- Markers --------------------------------------------------------------
     m = MARKER_TABLE.match(raw)
     if m:
         return f"%%TABLE:{m.group(1).strip()}%%"
@@ -191,10 +191,10 @@ def para_to_latex(para) -> str:
     if m:
         return f"%%FIGURE:{m.group(1).strip()}%%"
 
-    # ── Run-level formatting ──────────────────────────────────────────────────
+    # -- Run-level formatting --------------------------------------------------
     runs_tex = "".join(run_to_latex(r) for r in para.runs)
 
-    # ── Headings ──────────────────────────────────────────────────────────────
+    # -- Headings --------------------------------------------------------------
     if "Heading 1" in style or style == "Title":
         runs_tex = re.sub(r"^\d+[\.\)]\s*", "", runs_tex)
         return f"\n\\section{{{runs_tex}}}\n"
@@ -203,13 +203,13 @@ def para_to_latex(para) -> str:
     if "Heading 3" in style:
         return f"\n\\subsubsection{{{runs_tex}}}\n"
 
-    # ── Lists ─────────────────────────────────────────────────────────────────
+    # -- Lists -----------------------------------------------------------------
     if style.startswith("List Number"):
         return f"  \\item {runs_tex}"
     if style.startswith("List Bullet"):
         return f"  \\item {runs_tex}"
 
-    # ── Quote ─────────────────────────────────────────────────────────────────
+    # -- Quote -----------------------------------------------------------------
     if style == "Quote" or style == "Intense Quote":
         return f"\\begin{{quote}}\n{runs_tex}\n\\end{{quote}}"
 
@@ -259,7 +259,7 @@ def read_word(path: Path) -> dict:
         style = para.style.name
         raw   = para.text.strip()
 
-        # ── Metadata lines (KEY: value) ───────────────────────────────────────
+        # -- Metadata lines (KEY: value) ---------------------------------------
         meta_match = re.match(r"^(TITLE|SHORT_TITLE|AUTHORS|SHORT_AUTHORS|"
                               r"AFFILIATIONS|JOURNAL|DATE|ABSTRACT|KEYWORDS|"
                               r"DOI)\s*:\s*(.+)$", raw, re.IGNORECASE)
@@ -269,7 +269,7 @@ def read_word(path: Path) -> dict:
             meta[key] = val
             continue
 
-        # ── Handle list open/close ────────────────────────────────────────────
+        # -- Handle list open/close --------------------------------------------
         is_num    = style.startswith("List Number")
         is_bullet = style.startswith("List Bullet")
         is_list   = is_num or is_bullet
@@ -303,18 +303,18 @@ def read_word(path: Path) -> dict:
     return {"meta": meta, "blocks": blocks}
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # EXCEL READER
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def read_excel(path: Path) -> dict[str, str]:
     """
     Return {sheet_name: latex_table_string}.
 
     Sheet layout:
-      Row 1  — table caption (first non-empty cell)
-      Row 2  — column headers
-      Row 3+ — data rows
+      Row 1  - table caption (first non-empty cell)
+      Row 2  - column headers
+      Row 3+ - data rows
       Last column named "COLOR" (case-insensitive) -> row shading
     """
     wb     = load_workbook(path)
@@ -391,9 +391,9 @@ def _auto_colspec(n: int) -> str:
     return specs.get(n, " ".join(["L{2cm}"] * (n - 1)) + " X")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # FIGURE HANDLER
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def figure_latex(spec: str, fig_dir: Path) -> str:
     """
@@ -417,7 +417,7 @@ def figure_latex(spec: str, fig_dir: Path) -> str:
     fpath = fig_dir / filename
     if not fpath.exists():
         return (
-            f"\n% [FIGURE NOT FOUND: {filename}  —  "
+            f"\n% [FIGURE NOT FOUND: {filename}  -  "
             f"place file in figures/ directory]\n"
         )
 
@@ -431,9 +431,9 @@ def figure_latex(spec: str, fig_dir: Path) -> str:
     )
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # LATEX BUILDER
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def build_latex(parsed: dict, tables: dict, fig_dir: Path,
                 bib_keys: list[str]) -> str:
@@ -442,9 +442,9 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
     meta   = parsed["meta"]
     blocks = parsed["blocks"]
 
-    # ── Preamble from template file ───────────────────────────────────────────
+    # -- Preamble from template file -------------------------------------------
     preamble = TEMPLATE.read_text(encoding="utf-8")
-    # Strip the \documentclass declaration — we rewrite it below
+    # Strip the \documentclass declaration; we rewrite it below.
     preamble = re.sub(r"\\documentclass.*?\n", "", preamble, count=1)
 
     lines = [
@@ -460,7 +460,7 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
         "",
     ]
 
-    # ── Title block ───────────────────────────────────────────────────────────
+    # -- Title block -----------------------------------------------------------
     lines += [
         rf"\title{{{esc(meta['title'])}}}",
         rf"\author{{{esc(meta['authors'])}}}",
@@ -470,14 +470,14 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
         "",
     ]
 
-    # ── Affiliations ──────────────────────────────────────────────────────────
+    # -- Affiliations ----------------------------------------------------------
     if meta["affiliations"]:
         lines += [
             rf"{{\small\itshape {esc(meta['affiliations'])}}}\\[4pt]",
             "",
         ]
 
-    # ── Abstract ──────────────────────────────────────────────────────────────
+    # -- Abstract --------------------------------------------------------------
     if meta["abstract"]:
         lines += [
             r"\begin{abstractbox}",
@@ -486,7 +486,7 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
             "",
         ]
 
-    # ── Keywords ──────────────────────────────────────────────────────────────
+    # -- Keywords --------------------------------------------------------------
     if meta["keywords"]:
         lines += [
             rf"\noindent\textbf{{Keywords:}} {esc(meta['keywords'])}",
@@ -495,7 +495,7 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
             "",
         ]
 
-    # ── Body ──────────────────────────────────────────────────────────────────
+    # -- Body ------------------------------------------------------------------
     i = 0
     while i < len(blocks):
         blk = blocks[i]
@@ -508,7 +508,7 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
             else:
                 avail = ", ".join(tables) or "none"
                 lines.append(
-                    f"\n% [TABLE NOT FOUND: '{name}'  —  "
+                    f"\n% [TABLE NOT FOUND: '{name}'  -  "
                     f"available sheets: {avail}]\n"
                 )
             i += 1
@@ -524,7 +524,7 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
         lines.append(blk)
         i += 1
 
-    # ── Bibliography ──────────────────────────────────────────────────────────
+    # -- Bibliography ----------------------------------------------------------
     lines += [
         "",
         r"\bibliographystyle{unsrtnat}",
@@ -537,9 +537,9 @@ def build_latex(parsed: dict, tables: dict, fig_dir: Path,
     return "\n".join(lines)
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # WORD BUILDER
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def build_word(parsed: dict, tables_raw: dict,
                fig_dir: Path) -> Document:
@@ -548,14 +548,14 @@ def build_word(parsed: dict, tables_raw: dict,
     doc  = Document()
     meta = parsed["meta"]
 
-    # ── Page setup ────────────────────────────────────────────────────────────
+    # -- Page setup ------------------------------------------------------------
     section = doc.sections[0]
     section.top_margin    = Inches(1.0)
     section.bottom_margin = Inches(1.0)
     section.left_margin   = Inches(1.2)
     section.right_margin  = Inches(1.0)
 
-    # ── Base font ─────────────────────────────────────────────────────────────
+    # -- Base font -------------------------------------------------------------
     style = doc.styles["Normal"]
     style.font.name = "Palatino Linotype"
     style.font.size = Pt(11)
@@ -581,7 +581,7 @@ def build_word(parsed: dict, tables_raw: dict,
             p.alignment = align
         return p
 
-    # ── Title ─────────────────────────────────────────────────────────────────
+    # -- Title -----------------------------------------------------------------
     tp = doc.add_paragraph()
     tr = tp.add_run(meta["title"])
     tr.bold      = True
@@ -607,7 +607,7 @@ def build_word(parsed: dict, tables_raw: dict,
 
     doc.add_paragraph()  # spacer
 
-    # ── Abstract ─────────────────────────────────────────────────────────────
+    # -- Abstract -------------------------------------------------------------
     if meta["abstract"]:
         add_heading("Abstract", level=1)
         add_para(meta["abstract"])
@@ -622,13 +622,13 @@ def build_word(parsed: dict, tables_raw: dict,
 
     doc.add_paragraph()
 
-    # ── Body blocks ───────────────────────────────────────────────────────────
+    # -- Body blocks -----------------------------------------------------------
     in_list = False
     list_type = None
 
     for blk in parsed["blocks"]:
 
-        # Table marker — simplified plain table
+        # Table marker; simplified plain table.
         if blk.startswith("%%TABLE:") and blk.endswith("%%"):
             _add_word_table(doc, blk[8:-2].strip(), tables_raw, GREEN)
             continue
@@ -687,15 +687,15 @@ def _strip_latex_cmds(text: str) -> str:
     text = re.sub(r"\\emph\{([^}]+)\}", r"\1", text)
     text = re.sub(r"\\texttt\{([^}]+)\}", r"\1", text)
     text = re.sub(r"\$\\to\$", "->", text)
-    text = re.sub(r"\$\\geq\$", "≥", text)
-    text = re.sub(r"\$\\leq\$", "≤", text)
+    text = re.sub(r"\$\\geq\$", "=", text)
+    text = re.sub(r"\$\\leq\$", "=", text)
     text = re.sub(r"\$\\approx\$", "≈", text)
     text = re.sub(r"\\&", "&", text)
     text = re.sub(r"\\%", "%", text)
     text = re.sub(r"\\_", "_", text)
     text = re.sub(r"\\\$", "$", text)
-    text = re.sub(r"--", "–", text)
     text = re.sub(r"---", "—", text)
+    text = re.sub(r"--", "–", text)
     text = re.sub(r"\s+", " ", text)
     return text.strip()
 
@@ -785,9 +785,9 @@ def _add_word_figure(doc: Document, spec: str, fig_dir: Path):
     doc.add_paragraph()
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # COMPILER
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def compile_pdf(clean: bool = False) -> bool:
     """Run pdflatex twice to resolve cross-references."""
@@ -795,7 +795,7 @@ def compile_pdf(clean: bool = False) -> bool:
            "-output-directory", str(ROOT), str(TEX_OUT)]
 
     for run_n in [1, 2]:
-        print(f"  -> pdflatex pass {run_n}/2 …", end=" ", flush=True)
+        print(f"  -> pdflatex pass {run_n}/2 ...", end=" ", flush=True)
         result = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
         if result.returncode != 0:
             # Find first error line
@@ -830,9 +830,9 @@ def _clean_aux():
     print("  -> Auxiliary files removed.")
 
 
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 # MAIN
-# ══════════════════════════════════════════════════════════════════════════════
+# ------------------------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(
@@ -849,7 +849,7 @@ def main():
 
     ensure_output()
 
-    # ── Check inputs ──────────────────────────────────────────────────────────
+    # -- Check inputs ----------------------------------------------------------
     for f in [WORD_FILE, EXCEL_FILE]:
         if not f.exists():
             sys.exit(f"[error] Required file not found: {f}\n"
@@ -861,34 +861,34 @@ def main():
     for p in pngs:
         print(f"       - {p.name}")
 
-    # ── Parse content ─────────────────────────────────────────────────────────
-    print("\n[step 1/4] Parsing Word document …")
+    # -- Parse content ---------------------------------------------------------
+    print("\n[step 1/4] Parsing Word document ...")
     parsed = read_word(WORD_FILE)
     print(f"           Title: {parsed['meta']['title'][:60]}")
 
-    print("[step 2/4] Parsing Excel tables …")
+    print("[step 2/4] Parsing Excel tables ...")
     tables = read_excel(EXCEL_FILE)
     print(f"           Sheets: {', '.join(tables) or 'none'}")
 
-    print("[step 3/4] Processing BibTeX …")
+    print("[step 3/4] Processing BibTeX ...")
     bib_keys = process_bibtex(BIB_FILE, BIB_OUT)
 
-    # ── Generate LaTeX ────────────────────────────────────────────────────────
-    print("[step 4/4] Assembling main.tex …")
+    # -- Generate LaTeX --------------------------------------------------------
+    print("[step 4/4] Assembling main.tex ...")
     tex = build_latex(parsed, tables, FIGURES_DIR, bib_keys)
     TEX_OUT.write_text(tex, encoding="utf-8")
     print(f"           Written: {TEX_OUT}")
 
-    # ── PDF ───────────────────────────────────────────────────────────────────
+    # -- PDF -------------------------------------------------------------------
     if do_pdf:
-        print("\n[PDF] Compiling …")
+        print("\n[PDF] Compiling ...")
         ok = compile_pdf(clean=args.clean)
         if not ok:
             print("[PDF] Build failed. Check main.log for details.")
 
-    # ── Word ──────────────────────────────────────────────────────────────────
+    # -- Word ------------------------------------------------------------------
     if do_word:
-        print("\n[Word] Building output.docx …")
+        print("\n[Word] Building output.docx ...")
         word_doc = build_word(parsed, tables, FIGURES_DIR)
         word_dst = OUTPUT_DIR / "output.docx"
         word_doc.save(str(word_dst))
